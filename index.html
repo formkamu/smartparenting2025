@@ -113,21 +113,7 @@
                         </div>
                     </div>
                     
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3">Kudus-Jepara</h3>
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-xl">
-                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                                <span class="text-white text-base sm:text-lg">📍</span>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800 text-base sm:text-lg">Ahad, 9 November 2025</p>
-                                <p class="text-sm sm:text-base text-gray-600">Pukul 07.30 s.d. 12.00 WIB</p>
-                                <p class="text-sm sm:text-base text-gray-600">Majesty Grand Ballroom, Hotel Griptha Kudus</p>
-                                <p class="text-sm sm:text-base text-gray-600">Jl. AKBP Agil Kusumadya No.100 Jati-Kudus</p>
-                            </div>
-                        </div>
                     </div>
-                </div>
                 
                 <div class="text-center mb-4">
                     <p class="text-sm sm:text-base text-gray-700">Konfirmasi kehadiran Bapak/Ibu di sini 👇</p>
@@ -184,24 +170,12 @@
                         
                         <div class="mb-4">
                             <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-3">Jadwal</label>
-                            <div class="space-y-3">
-                                <label class="flex items-center p-3 border border-gray-300 rounded-xl hover:bg-gray-50 cursor-pointer">
-                                    <input type="radio" name="jadwal" value="Sabtu, 1 November 2025" required class="mr-3 text-blue-500">
-                                    <div>
-                                        <p class="font-medium text-gray-800 text-sm sm:text-base">Sabtu, 1 November 2025</p>
-                                        <p class="text-xs sm:text-sm text-gray-600">Pati-Juwana • Hotel New Merdeka Pati</p>
-                                    </div>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-300 rounded-xl hover:bg-gray-50 cursor-pointer">
-                                    <input type="radio" name="jadwal" value="Ahad, 9 November 2025" required class="mr-3 text-blue-500">
-                                    <div>
-                                        <p class="font-medium text-gray-800 text-sm sm:text-base">Ahad, 9 November 2025</p>
-                                        <p class="text-xs sm:text-sm text-gray-600">Kudus-Jepara • Hotel Griptha Kudus</p>
-                                    </div>
-                                </label>
+                            <div class="p-3 border border-gray-300 rounded-xl bg-gray-50">
+                                <p class="font-medium text-gray-800 text-sm sm:text-base">Sabtu, 1 November 2025</p>
+                                <p class="text-xs sm:text-sm text-gray-600">Pati-Juwana • Hotel New Merdeka Pati</p>
                             </div>
+                            <input type="hidden" name="jadwal" value="Sabtu, 1 November 2025">
                         </div>
-                        
                         <div class="mb-4">
                             <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-3">Yang Hadir (pilih salah satu atau keduanya)</label>
                             <div class="space-y-2">
@@ -340,47 +314,47 @@
             submitBtn.disabled = true;
             document.getElementById('errorMessage').classList.add('hidden');
 
-        const formData = new FormData(event.target);
+            const formData = new FormData(event.target);
 
             // --- PERUBAHAN UTAMANYA DI SINI ---
-            // 1. Ambil SEMUA data 'yangHadir' sebagai array (bisa ['Ayah/Wakil Ayah'] atau ['Bunda/Wakil Bunda'] atau ['Ayah/Wakil Ayah', 'Bunda/Wakil Bunda'])
-        const yangHadirArray = formData.getAll('yangHadir');
+            // 1. Ambil SEMUA data 'yangHadir' sebagai array (bisa ['Ayah'] atau ['Bunda'] atau ['Ayah', 'Bunda'])
+            const yangHadirArray = formData.getAll('yangHadir');
     
             // 2. Gabung array itu jadi satu string, dipisah pake koma
-            // Hasilnya bakal jadi "Ayah/Wakil Ayah, Bunda/Wakil Bunda"
-        const yangHadirString = yangHadirArray.join(', ');
+            // Hasilnya bakal jadi "Ayah, Bunda"
+            const yangHadirString = yangHadirArray.join(', ');
             // --- SELESAI PERUBAHAN ---
 
-        const data = {
-            timestamp: new Date().toLocaleString('id-ID'),
-            namaOrtu: formData.get('namaOrtu'),
-            namaSiswa: formData.get('namaSiswa'),
-            jenjang: formData.get('jenjang'),
-            jadwal: formData.get('jadwal'),
-            yangHadir: yangHadirString || '', // 3. Masukin string yang udah digabung ke sini
-            kehadiran: formData.get('kehadiran')
-        };
+            const data = {
+                timestamp: new Date().toLocaleString('id-ID'),
+                namaOrtu: formData.get('namaOrtu'),
+                namaSiswa: formData.get('namaSiswa'),
+                jenjang: formData.get('jenjang'),
+                jadwal: formData.get('jadwal'), // Ini akan ambil dari hidden input
+                yangHadir: yangHadirString || '', // 3. Masukin string yang udah digabung ke sini
+                kehadiran: formData.get('kehadiran')
+            };
 
             try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-        });
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
         
-            console.log('Data sent successfully.');
-            document.getElementById('registrationForm').classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
+                console.log('Data sent successfully.');
+                document.getElementById('registrationForm').classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
 
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            showErrorMessage('Gagal terhubung ke server. Cek koneksi & URL Script.');
-        } finally {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showErrorMessage('Gagal terhubung ke server. Cek koneksi & URL Script.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
-    }
                 
         async function loadDashboardData() {
             const loading = document.getElementById('dashboardLoading');
